@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    image: kazu912/volunteerhub-backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" # Đổi lại port nếu app.ts của bạn đang mở port khác
+    environment:
+      - NODE_ENV=production
+      # Mở file backend/.env ra và copy các biến môi trường vào đây
+      # Ví dụ: MONGO_URI=mongodb+srv://...
+    restart: unless-stopped
+
+  frontend:
+    image: kazu912/volunteerhub-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80" # Truy cập web ở localhost:80
+    depends_on:
+      - backend
+    restart: unless-stopped
