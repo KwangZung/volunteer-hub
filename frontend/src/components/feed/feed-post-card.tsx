@@ -1,0 +1,245 @@
+
+
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Heart, MessageCircle, Flag, Trash2 } from 'lucide-react';
+import type { CommentWithUser } from '@/types/discussion';
+import type { FeedPostWithUser } from '@/types/feed';
+import { CommentSection } from '@/components/discussion/comment-section';
+import { ReportDialog } from '@/components/discussion/report-dialog';
+import { PostDetailDialog } from '@/components/discussion/post-detail-dialog';
+import { formatRelativeTime } from '@/utils/formatDate';
+
+interface FeedPostCardProps {
+  post: FeedPostWithUser;
+  comments: CommentWithUser[];
+  currentUserId: string;
+  currentUser: { id: string; name: string; avatarUrl: string };
+  onLike: (postId: string) => void;
+  onAddComment: (postId: string, content: string) => void;
+  isDetailOpen?: boolean;
+  onDetailOpenChange?: (open: boolean) => void;
+  onDeletePost?: (postId: string) => void;
+  onDeleteComment?: (commentId: string) => void;
+}
+
+export function FeedPostCard({
+  post,
+  comments,
+  currentUserId,
+  currentUser,
+  onLike,
+  onAddComment,
+  isDetailOpen = false,
+  onDetailOpenChange,
+  onDeletePost,
+  onDeleteComment,
+}: FeedPostCardProps) {
+  const [showReportDialog, setShowReportDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [localShowDetailDialog, setLocalShowDetailDialog] = useState(false);
+
+  const showDetailDialog = onDetailOpenChange !== undefined ? isDetailOpen : localShowDetailDialog;
+  const setShowDetailDialog = onDetailOpenChange !== undefined
+    ? onDetailOpenChange
+    : setLocalShowDetailDialog;
+
+  const handleLike = () => {
+    onLike(post.id);
+  };
+
+  const handleDeletePost = () => {
+    if (onDeletePost) {
+      onDeletePost(post.id);
+      setShowDeleteDialog(false);
+    }
+  };
+
+  const isLiked = post.likedByMe || false;
+  const likeCount = post.likes;
+
+  const previewComments = comments.slice(0, 2);
+  const hasMoreComments = comments.length > 2;
+
+  const postForDialog = {
+    ...post,
+    author: post.author,
+  };
+
+  return (
+    <>
+      <Card className="w-full shadow-md hover:shadow-lg transition-shadow">
+        {/* Feed Header - Event Info + User Info */}
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start gap-3">
+              {/* Event Image (rounded square) */}
+              <Link to={`/events/${post.eventId}`} className="shrink-0">
+                <div className="h-12 w-12 rounded-lg overflow-hidden hover:opacity-80 transition-opacity">
+                  <img
+                    src={post.eventImage}
+                    alt={post.eventTitle}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </Link>
+
+              <div className="flex-1 min-w-0">
+                {/* Event Name */}
+                <Link
+                  to={`/events/${post.eventId}`}
+                  className="font-semibold text-sm hover:underline line-clamp-1"
+                >
+                  {post.eventTitle}
+                </Link>
+
+                {/* User Name + Time */}
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5 flex-wrap">
+                  <Link
+                    to={`/u/${(post.author as any).username || post.author.id}`}
+                    className="hover:underline hover:text-foreground transition-colors"
+                  >
+                    {post.author.name}
+                  </Link>
+                  {post.author.role === 'manager' && (
+                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
+                      Manager
+                    </Badge>
+                  )}
+                  <span>•</span>
+                  <span>{formatRelativeTime(post.timestamp)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1">
+              {currentUserId === post.author.id && onDeletePost && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
+                  onClick={() => setShowDeleteDialog(true)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
+                onClick={() => setShowReportDialog(true)}
+              >
+                <Flag className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+
+        {/* Body */}
+        <CardContent className="pb-3 pt-0 overflow-hidden">
+          <p className="text-sm whitespace-pre-wrap break-words [overflow-wrap:anywhere]" style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{post.content}</p>
+          {post.imageUrl && (
+            <div className="rounded-lg overflow-hidden mt-3">
+              <img
+                src={post.imageUrl}
+                alt="Post image"
+                className="w-full h-auto object-cover max-h-96"
+              />
+            </div>
+          )}
+        </CardContent>
+
+        {/* Footer Stats */}
+        <CardFooter className="flex flex-col gap-3 pt-0">
+          <div className="w-full flex items-center gap-4 text-sm text-muted-foreground">
+            <button
+              onClick={handleLike}
+              className={`flex items-center gap-1 hover:text-red-500 transition-colors ${isLiked ? 'text-red-500' : ''
+                }`}
+            >
+              <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
+              <span>{likeCount}</span>
+            </button>
+            <Link
+              to={`/feed/events/${post.eventId}/posts/${post.id}`}
+              className="flex items-center gap-1 hover:text-primary transition-colors"
+            >
+              <MessageCircle className="h-4 w-4" />
+              <span>{comments.length}</span>
+            </Link>
+          </div>
+
+          <Separator />
+
+          {/* Comments Section */}
+          <CommentSection
+            comments={previewComments}
+            hasMoreComments={hasMoreComments}
+            totalComments={comments.length}
+            currentUser={currentUser}
+            viewAllCommentsUrl={`/feed/events/${post.eventId}/posts/${post.id}`}
+            onAddComment={(content: string) => onAddComment(post.id, content)}
+            onDeleteComment={onDeleteComment}
+          />
+        </CardFooter>
+      </Card>
+
+      {/* Report Dialog */}
+      <ReportDialog
+        open={showReportDialog}
+        onOpenChange={setShowReportDialog}
+        postId={post.id}
+      />
+
+      {/* Post Detail Dialog */}
+      <PostDetailDialog
+        open={showDetailDialog}
+        onOpenChange={setShowDetailDialog}
+        post={postForDialog}
+        comments={comments}
+        currentUserId={currentUserId}
+        currentUser={currentUser}
+        onAddComment={(content: string) => onAddComment(post.id, content)}
+        onLike={() => handleLike()}
+        isLiked={isLiked}
+        likeCount={likeCount}
+        onDeleteComment={onDeleteComment}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Post</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this post? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeletePost}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}
