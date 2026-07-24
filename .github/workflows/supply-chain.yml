@@ -43,16 +43,24 @@ jobs:
         working-directory: ./${{ matrix.service }}
         run: docker build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
 
-      # 2. Chạy Trivy để quét lỗ hổng
+      # 2. Chạy Trivy để quét lỗ hổng và xuất báo cáo HTML
       - name: Scan Image with Trivy
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'
-          format: 'table'
+          format: 'template'
+          template: '@/contrib/html.tpl'
+          output: 'trivy-results-${{ matrix.service }}.html'
           exit-code: '0' # Đổi thành 0 để không báo lỗi pipeline khi phát hiện lỗ hổng
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: Trivy-Report-${{ matrix.service }}
+          path: trivy-results-${{ matrix.service }}.html
 
       # 3. Sinh SBOM bằng Syft
       - name: Generate SBOM with Syft
