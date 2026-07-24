@@ -48,8 +48,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'
-          format: 'template'
-          template: '@/contrib/html.tpl'
+          format: 'html'
           output: 'trivy-results-${{ matrix.service }}.html'
           exit-code: '0' # Đổi thành 0 để không báo lỗi pipeline khi phát hiện lỗ hổng
           ignore-unfixed: true
