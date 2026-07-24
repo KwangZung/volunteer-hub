@@ -1,0 +1,6 @@
+apiVersion: v2
+name: volunteerhub
+description: A Helm chart for VolunteerHub Stack (Frontend, Backend, MongoDB)
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

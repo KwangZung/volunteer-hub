@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-mongodb
+spec:
+  clusterIP: None # Headless service cho StatefulSet
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    app: mongodb
