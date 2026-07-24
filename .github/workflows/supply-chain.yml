@@ -41,7 +41,9 @@ jobs:
       # 1. Build Image tương ứng với service
       - name: Build Image
         working-directory: ./${{ matrix.service }}
-        run: docker build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+        run: |
+          docker build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+          docker tag ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} ${{ env.IMAGE_NAME }}:latest
 
       - name: Download Trivy HTML Template
         run: curl -sL -o html.tpl https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl
@@ -81,7 +83,9 @@ jobs:
 
       # 4. Push Image lên Registry
       - name: Push Image
-        run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+        run: |
+          docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          docker push ${{ env.IMAGE_NAME }}:latest
 
       # 5. Cài đặt Cosign và Ký Image
       - name: Install Cosign

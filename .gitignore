@@ -35,3 +35,12 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform.lock.hcl
+aws
+awscliv2.zip
