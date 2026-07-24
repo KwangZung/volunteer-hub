@@ -1,0 +1,20 @@
+# Bỏ qua thư mục chứa thư viện (vì trong Dockerfile đã có lệnh npm install)
+node_modules/
+
+# Bỏ qua các file log
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Bỏ qua file chứa biến môi trường nhạy cảm (không bao giờ được ném .env lên Image)
+.env
+.env.*
+
+# Bỏ qua thư mục build cũ (vì ta dùng thẳng tsx)
+dist/
+build/
+
+# Bỏ qua các file cấu hình git và tài liệu
+.git/
+.gitignore
+README.md
