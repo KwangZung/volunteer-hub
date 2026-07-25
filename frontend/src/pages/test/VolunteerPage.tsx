@@ -6,23 +6,23 @@ export default function VolunteerPage() {
     const [myRegs, setMyRegs] = useState<any[]>([]);
 
     const fetchEvents = async () => {
-        const res = await axios.get("http://localhost:5000/api/events?status=approved");
+        const res = await axios.get("/api/events?status=approved");
         const list = res.data.data || res.data || [];
         setEvents(list);
     };
 
     const fetchMyRegistrations = async () => {
-        const res = await axios.get("http://localhost:5000/api/register/me");
+        const res = await axios.get("/api/register/me");
         setMyRegs(res.data.data || []);
     };
 
     const registerEvent = async (eventId: string) => {
-        await axios.post(`http://localhost:5000/api/register/${eventId}`);
+        await axios.post(`/api/register/${eventId}`);
         fetchMyRegistrations();
     };
 
     const unregisterEvent = async (eventId: string) => {
-        await axios.delete(`http://localhost:5000/api/register/${eventId}`);
+        await axios.delete(`/api/register/${eventId}`);
         fetchMyRegistrations();
     };
 

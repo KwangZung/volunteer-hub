@@ -5,12 +5,12 @@ export default function AdminPage() {
     const [events, setEvents] = useState([]);
 
     const fetchEvents = async () => {
-        const res = await axios.get("http://localhost:5000/api/events/all");
+        const res = await axios.get("/api/events/all");
         setEvents(res.data.data || res.data);
     };
 
     const approveEvent = async (id: string) => {
-        await axios.put(`http://localhost:5000/api/events/${id}/approve`);
+        await axios.put(`/api/events/${id}/approve`);
         fetchEvents();
     };
 

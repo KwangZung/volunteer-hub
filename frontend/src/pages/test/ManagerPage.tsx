@@ -14,13 +14,13 @@ export default function ManagerPage() {
     const loadUser = async () => {
         const token = localStorage.getItem("accessToken");
         if (token) axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const res = await axios.get("http://localhost:5000/api/auth/me");
+        const res = await axios.get("/api/auth/me");
         setUser(res.data.user || res.data.data);
     };
 
     const fetchMyEvents = async () => {
-        const resApproved = await axios.get("http://localhost:5000/api/events/my?status=approved");
-        const resPending = await axios.get("http://localhost:5000/api/events/my?status=pending");
+        const resApproved = await axios.get("/api/events/my?status=approved");
+        const resPending = await axios.get("/api/events/my?status=pending");
 
         setApproved(resApproved.data.data || []);
         setPending(resPending.data.data || []);
@@ -46,7 +46,7 @@ export default function ManagerPage() {
     };
 
     const createEvent = async () => {
-        await axios.post("http://localhost:5000/api/events", {
+        await axios.post("/api/events", {
             title: newEvent,
             status: "pending"
         });

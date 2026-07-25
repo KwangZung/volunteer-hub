@@ -222,7 +222,7 @@ const Feed = () => {
                                     {post.image && (
                                         <div className="mt-2">
                                             <img
-                                                src={`${(import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api\/?$/, '')}/file/${post.image.fileId}`}
+                                                src={`${(import.meta.env.VITE_API_URL || '/api').replace(/\/api\/?$/, '')}/file/${post.image.fileId}`}
                                                 alt="Post content"
                                                 className="w-full h-auto object-cover max-h-[600px] bg-gray-50"
                                             />

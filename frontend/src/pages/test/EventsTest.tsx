@@ -5,7 +5,7 @@ import EventCard from "./EventCard.tsx";
 import EventForm from "./EventForm.tsx";
 import EventDetails from "./EventDetails.tsx";
 
-const API_URL = "http://localhost:5000/api/events/all";
+const API_URL = "/api/events/all";
 
 const EventsTest: React.FC = () => {
     const [events, setEvents] = useState<any[]>([]);
@@ -24,7 +24,7 @@ const EventsTest: React.FC = () => {
 
     const createEvent = async (data: any) => {
         try {
-            const res = await axios.post("http://localhost:5000/api/events", {
+            const res = await axios.post("/api/events", {
                 ...data,
                 tags: [],
                 currentMembers: 0,
