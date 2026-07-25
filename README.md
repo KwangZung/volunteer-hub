@@ -85,7 +85,7 @@ cd infra/
 terraform destroy --auto-approve
 
 # Xóa ArgoCD Application (Tùy chọn)
-kubectl delete -f ../charts/argocd-app.yaml
+kubectl delete -f argocd-app.yaml
 ```
 
 *(Việc dùng `terraform destroy` sẽ xóa đi toàn bộ Namespace `volunteerhub-prod`, kéo theo tất cả các Pod, Service, Ingress và PVC bên trong nó bị dọn dẹp sạch sẽ)*
