@@ -86,6 +86,9 @@ cd infra/
 
 # Ra lệnh cho Terraform hủy toàn bộ Namespace và Secret
 terraform destroy --auto-approve
+
+# Xóa toàn bộ phần mềm ArgoCD khỏi K8s Cluster (Tùy chọn nếu muốn gỡ sạch)
+kubectl delete namespace argocd
 ```
 
 *(Việc dùng `terraform destroy` sẽ xóa đi toàn bộ Namespace `volunteerhub-prod`, kéo theo tất cả các Pod, Service, Ingress và PVC bên trong nó bị dọn dẹp sạch sẽ)*
