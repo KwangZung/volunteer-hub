@@ -6,10 +6,7 @@ metadata:
     cert-manager.io/issuer: "{{ .Chart.Name }}-selfsigned-issuer"
 spec:
   ingressClassName: nginx
-  tls:
-    - hosts:
-        - {{ .Values.ingress.host }}
-      secretName: {{ .Chart.Name }}-tls-secret
+
   rules:
     - host: {{ .Values.ingress.host }}
       http:
