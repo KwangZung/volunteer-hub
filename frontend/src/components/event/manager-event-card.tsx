@@ -54,8 +54,8 @@ export const ManagerEventCard = ({
 
   const getImageUrl = (url?: string) => {
     if (!url) return undefined;
-    if (url.startsWith('//uploads')) {
-      return `http://localhost:5000${url.substring(1)}`;
+    if (url.startsWith('//uploads') || url.startsWith('/uploads')) {
+      return url.startsWith('//') ? url.substring(1) : url;
     }
     return url;
   };

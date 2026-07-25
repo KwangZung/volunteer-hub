@@ -159,28 +159,23 @@ export const googleAuthCallback = (req: Request, res: Response, next: NextFuncti
   const payload = req.user as any;
 
   if (payload?.banned) {
-    const frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
-    const redirectUrl = new URL(`${frontendUrl}/banned`);
-    if (payload.reason) redirectUrl.searchParams.set('reason', payload.reason);
-    if (payload.until) redirectUrl.searchParams.set('until', payload.until);
+    let redirectUrl = `/banned`;
+    if (payload.reason) redirectUrl += `?reason=${encodeURIComponent(payload.reason)}`;
+    if (payload.until) redirectUrl += `${payload.reason ? '&' : '?'}until=${encodeURIComponent(payload.until)}`;
 
-    console.log('[googleAuthCallback] User is banned, redirecting to:', redirectUrl.toString());
-    return res.redirect(redirectUrl.toString());
+    console.log('[googleAuthCallback] User is banned, redirecting to:', redirectUrl);
+    return res.redirect(redirectUrl);
   }
 
   const { token, user } = payload ?? {};
 
   if (!token) {
-    const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/login?error=google_auth_failed`;
-    return res.redirect(loginUrl);
+    return res.redirect(`/login?error=google_auth_failed`);
   }
 
-  const frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
+  let redirectUrl = `/?accessToken=${encodeURIComponent(token)}`;
+  if (user?.id) redirectUrl += `&userId=${encodeURIComponent(user.id)}`;
 
-  const redirectUrl = new URL(frontendUrl);
-  redirectUrl.searchParams.set('accessToken', token);
-  if (user?.id) redirectUrl.searchParams.set('userId', user.id);
-
-  console.log('[googleAuthCallback] Redirecting to:', redirectUrl.toString());
-  res.redirect(redirectUrl.toString());
+  console.log('[googleAuthCallback] Redirecting to:', redirectUrl);
+  res.redirect(redirectUrl);
 };

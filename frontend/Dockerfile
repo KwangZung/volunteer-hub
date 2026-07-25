@@ -12,6 +12,8 @@ RUN npm run build
 FROM nginx:alpine
 # Xóa thư mục html mặc định của nginx
 RUN rm -rf /usr/share/nginx/html/*
+# Copy custom Nginx config hỗ trợ SPA Routing
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copy source đã build (thường Vite build ra folder dist) sang Nginx
 COPY --from=builder /app/dist /usr/share/nginx/html
 

@@ -18,6 +18,20 @@ spec:
                 name: {{ .Chart.Name }}-backend
                 port:
                   number: {{ .Values.backend.port }}
+          - path: /uploads
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Chart.Name }}-backend
+                port:
+                  number: {{ .Values.backend.port }}
+          - path: /file
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Chart.Name }}-backend
+                port:
+                  number: {{ .Values.backend.port }}
           - path: /
             pathType: Prefix
             backend:
