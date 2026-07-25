@@ -15,4 +15,4 @@ mongodb:
   storageSize: "2Gi"
 
 ingress:
-  host: "volunteerhub.local"
+  host: "localhost"
