@@ -130,7 +130,7 @@ export function SignupForm({
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
-          <a href={`${import.meta.env.VITE_API_URL}/auth/google`} style={{ width: '100%' }}>
+          <a href="/api/auth/google" style={{ width: '100%' }}>
             <Button variant="outline" type="button" className="w-full">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path
