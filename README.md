@@ -78,14 +78,14 @@ Mở trình duyệt và truy cập vào địa chỉ Ingress đã được ánh 
 Sau khi hoàn thành thử nghiệm và muốn giải phóng tài nguyên trên máy, ta có thể xóa các thành phần đã tạo thông qua Terraform và Helm:
 
 ```bash
+# Xóa ArgoCD Application trước để nó không tự động phục hồi tài nguyên
+kubectl delete -f argocd-app.yaml
+
 # Di chuyển vào thư mục hạ tầng
 cd infra/
 
 # Ra lệnh cho Terraform hủy toàn bộ Namespace và Secret
 terraform destroy --auto-approve
-
-# Xóa ArgoCD Application (Tùy chọn)
-kubectl delete -f argocd-app.yaml
 ```
 
 *(Việc dùng `terraform destroy` sẽ xóa đi toàn bộ Namespace `volunteerhub-prod`, kéo theo tất cả các Pod, Service, Ingress và PVC bên trong nó bị dọn dẹp sạch sẽ)*
