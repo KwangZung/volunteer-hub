@@ -73,3 +73,19 @@ Mở trình duyệt và truy cập vào địa chỉ Ingress đã được ánh 
 - Mọi lời gọi API từ Frontend tới Backend sẽ được Ingress tự động định tuyến thông qua `/api/...`.
 - Tính năng đăng nhập (như Google Auth) sẽ hoạt động bình thường, không bị lỗi CORS do mọi request đều đi qua cùng một cổng Ingress.
 
+### 6. Dọn dẹp tài nguyên (Cleanup)
+
+Sau khi hoàn thành thử nghiệm và muốn giải phóng tài nguyên trên máy, ta có thể xóa các thành phần đã tạo thông qua Terraform và Helm:
+
+```bash
+# Di chuyển vào thư mục hạ tầng
+cd infra/
+
+# Ra lệnh cho Terraform hủy toàn bộ Namespace và Secret
+terraform destroy --auto-approve
+
+# Xóa ArgoCD Application (Tùy chọn)
+kubectl delete -f ../charts/argocd-app.yaml
+```
+
+*(Việc dùng `terraform destroy` sẽ xóa đi toàn bộ Namespace `volunteerhub-prod`, kéo theo tất cả các Pod, Service, Ingress và PVC bên trong nó bị dọn dẹp sạch sẽ)*
